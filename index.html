@@ -149,8 +149,7 @@ function quickEstimate() {
 
     document.getElementById("estimateResults").innerHTML = `
         <p><b>Diagonal:</b> ~${diagonalInInches.toFixed(2)}" (${diagonalInCm.toFixed(1)} cm)</p>
-        <p><b>Width:</b> ~${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm)</p>
-        <p><b>Height:</b> ~${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
+        <p><b>Width:</b> ~${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm) x <b>Height:</b> ~${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
         <p><b>Resolution:</b> ${screen.width} × ${screen.height} (CSS px), DPR: ${window.devicePixelRatio}</p>
         <p style="color:red;font-size:14px;">⚠ This is just an estimate. Use calibration below for accuracy.</p>
     `;
@@ -190,8 +189,7 @@ function calculatePrecise() {
 
     document.getElementById("preciseResults").innerHTML = `
         <p><b>Diagonal:</b> ${diagonalInInches.toFixed(2)}" (${diagonalInCm.toFixed(1)} cm)</p>
-        <p><b>Width:</b> ${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm)</p>
-        <p><b>Height:</b> ${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
+        <p><b>Width:</b> ${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm) x <b>Height:</b> ${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
         <p><b>Resolution:</b> ${screen.width} × ${screen.height} (CSS px), DPR: ${dpr}</p>
         <p><b>Calculated PPI:</b> ${ppi.toFixed(1)}</p>
     `;
