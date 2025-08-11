@@ -2,9 +2,15 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<meta property="og:title" content="Screen Size Detector">
+<meta name="description" content="Real screen size detector using device pixel ratio and calibration with a credit card.">
+<meta name="keywords" content="screen size detector, real screen size compute">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta property="og:type" content="website">
+<meta property="og:url" content="https://phtuananh.github.io/RealScreenSize/">
 <title>Screen Size Detector</title>
 <style>
-  body {
+   body {
     font-family: Arial, sans-serif;
     background: #f5f5f5;
     padding: 20px;
@@ -113,6 +119,7 @@ button:hover {
   <p id="scaleValue">Scale: 100%</p>
   <button onclick="calculatePrecise()" style=>✅ Get Accurate Size</button>
 
+  <div id="preciseResults" style="margin-top:20px;"></div>
   <div id="creditCard">
     <div class="cornerMarker">
       <div class="cornerDot"></div>
@@ -120,7 +127,7 @@ button:hover {
     </div>
   </div>
   
-  <div id="preciseResults" style="margin-top:20px;"></div>
+  
 </div>
 
 <script>
@@ -198,6 +205,8 @@ function calculatePrecise() {
 /* Run quick estimate first */
 quickEstimate();
 </script>
-
+<footer style="margin-top:40px; color:#666; font-size:15px;">
+  &copy; 2025 Screen Size Detector. Released 2025-08. Created with help of ChatPGT, Copilot.
+</footer>
 </body>
 </html>
