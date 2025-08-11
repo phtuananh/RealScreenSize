@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Screen Size Detector</title>
+<style>
+  body {
+    font-family: Arial, sans-serif;
+    background: #f5f5f5;
+    padding: 20px;
+    text-align: center;
+  }
+  .card {
+    background: white;
+    padding: 20px;
+    border-radius: 12px;
+    max-width: 650px;
+    margin: auto;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+  }
+  h1 {
+    margin-bottom: 10px;
+  }
+  p {
+    font-size: 18px;
+    margin: 8px 0;
+  }
+  #creditCard {
+    background: lightblue;
+    height: 54mm; /* credit card height */
+    width: 85.6mm; /* default width */
+    margin: 20px auto;
+    border: 2px dashed #333;
+  }
+  input[type=range] {
+    width: 100%;
+  }
+  .section {
+    border-top: 2px dashed #ddd;
+    margin-top: 25px;
+    padding-top: 20px;
+  }
+  
+  #creditCard {
+  background: lightblue;
+  height: 54mm;
+  width: 85.6mm;
+  border: 2px dashed #333;
+  position: relative;
+  transform-origin: top left;
+  transform: scale(1);
+}
+
+.cornerMarker {
+  position: absolute;
+  top: 0;
+  left: 0;
+  display: flex;
+  align-items: center;
+  padding: 4px;
+}
+
+.cornerDot {
+  width: 12px;
+  height: 12px;
+  background-color: red;
+  border-radius: 50%;
+  margin-right: 6px;
+}
+
+.cornerText {
+  font-size: 14px;
+  font-weight: bold;
+  color: #333;
+}
+
+button {
+  font-size: 18px;
+  padding: 12px 24px;
+  background-color: #0078D7;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+  margin-top: 12px;
+}
+
+button:hover {
+  background-color: #005fa3;
+  transform: scale(1.05);
+}
+</style>
+</head>
+<body>
+
+<div class="card">
+  <h1>📏 Screen Size Detector</h1>
+
+  <!-- Default estimation -->
+  <h2>Quick Estimate (Not Exact)</h2>
+  <p>This is an <b>approximation</b> based on common device PPI.  
+     For accurate results, please calibrate with a credit card below.</p>
+  <div id="estimateResults"></div>
+
+<!-- Calibration section -->
+<div class="section">
+  <h2>Calibrate with a Credit Card</h2>
+  <p>Place a credit card on your screen and adjust the slider  
+     until the blue box matches its size exactly.</p>
+    
+  <input type="range" id="scaleSlider" min="50" max="200" value="100">
+  <p id="scaleValue">Scale: 100%</p>
+  <button onclick="calculatePrecise()" style=>✅ Get Accurate Size</button>
+
+  <div id="creditCard">
+    <div class="cornerMarker">
+      <div class="cornerDot"></div>
+      <span class="cornerText">Put your card here</span>
+    </div>
+  </div>
+  
+  <div id="preciseResults" style="margin-top:20px;"></div>
+</div>
+
+<script>
+/* ---------- Quick Estimate ---------- */
+function quickEstimate() {
+    const physicalPixelWidth = screen.width * window.devicePixelRatio;
+    const physicalPixelHeight = screen.height * window.devicePixelRatio;
+
+    // Simple guess based on width
+    let estimatedPPI;
+    if (physicalPixelWidth > 3000) {
+        estimatedPPI = 300; // phone/tablet
+    } else if (physicalPixelWidth > 2000) {
+        estimatedPPI = 110; // laptop/HiDPI
+    } else {
+        estimatedPPI = 96;  // desktop
+    }
+
+    const widthInInches = physicalPixelWidth / estimatedPPI;
+    const heightInInches = physicalPixelHeight / estimatedPPI;
+    const diagonalInInches = Math.sqrt(widthInInches**2 + heightInInches**2);
+
+    const widthInCm = widthInInches * 2.54;
+    const heightInCm = heightInInches * 2.54;
+    const diagonalInCm = diagonalInInches * 2.54;
+
+    document.getElementById("estimateResults").innerHTML = `
+        <p><b>Diagonal:</b> ~${diagonalInInches.toFixed(2)}" (${diagonalInCm.toFixed(1)} cm)</p>
+        <p><b>Width:</b> ~${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm)</p>
+        <p><b>Height:</b> ~${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
+        <p><b>Resolution:</b> ${screen.width} × ${screen.height} (CSS px), DPR: ${window.devicePixelRatio}</p>
+        <p style="color:red;font-size:14px;">⚠ This is just an estimate. Use calibration below for accuracy.</p>
+    `;
+}
+
+/* ---------- Calibration ---------- */
+let scalePercent = 100;
+const CREDIT_CARD_WIDTH_MM = 85.6;
+
+document.getElementById("scaleSlider").addEventListener("input", function(e) {
+    scalePercent = e.target.value;
+    document.getElementById("scaleValue").innerText = `Scale: ${scalePercent}%`;
+
+    const scale = scalePercent / 100;
+    document.getElementById("creditCard").style.transform = `scale(${scale})`;
+});
+
+function calculatePrecise() {
+    const creditCardWidthInches = CREDIT_CARD_WIDTH_MM / 25.4;
+    const measuredWidthPx = document.getElementById("creditCard").offsetWidth;
+    const scale = scalePercent / 100;
+    const scaledWidthPx = measuredWidthPx * scale;
+
+    const dpr = window.devicePixelRatio;
+    const ppi = (scaledWidthPx * dpr) / creditCardWidthInches;
+
+    const physicalPixelWidth = screen.width * dpr;
+    const physicalPixelHeight = screen.height * dpr;
+
+    const widthInInches = physicalPixelWidth / ppi;
+    const heightInInches = physicalPixelHeight / ppi;
+    const diagonalInInches = Math.sqrt(widthInInches**2 + heightInInches**2);
+
+    const widthInCm = widthInInches * 2.54;
+    const heightInCm = heightInInches * 2.54;
+    const diagonalInCm = diagonalInInches * 2.54;
+
+    document.getElementById("preciseResults").innerHTML = `
+        <p><b>Diagonal:</b> ${diagonalInInches.toFixed(2)}" (${diagonalInCm.toFixed(1)} cm)</p>
+        <p><b>Width:</b> ${widthInInches.toFixed(2)}" (${widthInCm.toFixed(1)} cm)</p>
+        <p><b>Height:</b> ${heightInInches.toFixed(2)}" (${heightInCm.toFixed(1)} cm)</p>
+        <p><b>Resolution:</b> ${screen.width} × ${screen.height} (CSS px), DPR: ${dpr}</p>
+        <p><b>Calculated PPI:</b> ${ppi.toFixed(1)}</p>
+    `;
+}
+
+/* Run quick estimate first */
+quickEstimate();
+</script>
+
+</body>
+</html>
